@@ -1,33 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:ecommerce_app/screens/auth_wrapper.dart';
-import 'package:ecommerce_app/providers/cart_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:ecommerce_app/providers/cart_provider.dart'; // 1. ADD THIS
+import 'package:provider/provider.dart'; // 2. ADD THIS
 
-void main () async {
+void main() async {
 
+  // 1. Preserve the splash screen
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  // 2. Initialize Firebase (from Module 1)
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FlutterNativeSplash.remove();
-
+  // 3. Run the app (from Module 1)
   runApp(
+    // 2. We wrap our app in the provider
     ChangeNotifierProvider(
+      // 3. This "creates" one instance of our cart
       create: (context) => CartProvider(),
+      // 4. The child is our normal app
       child: const MyApp(),
     ),
   );
 
+  // 4. Remove the splash screen after app is ready
+  FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key}); // Added const constructor
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +41,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'eCommerce App',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.pink,
+        useMaterial3: true, // Optional: for Material 3
       ),
       home: const AuthWrapper(),
     );
