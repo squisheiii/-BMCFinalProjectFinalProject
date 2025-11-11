@@ -79,7 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: Colors.pinkAccent,
+          backgroundColor: Colors.blueAccent,
         ),
       );
     } catch (e) {
@@ -87,7 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An unexpected error occurred'),
-          backgroundColor: Colors.pinkAccent,
+          backgroundColor: Colors.blueAccent,
         ),
       );
 
@@ -177,7 +177,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
                     ),
                   )
                       : const Text('Sign Up'),

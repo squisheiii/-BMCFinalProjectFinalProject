@@ -1,50 +1,30 @@
 import 'package:ecommerce_app/providers/cart_provider.dart';
+import 'package:ecommerce_app/screens/payment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// 1. ADD THIS
-import 'package:ecommerce_app/screens/order_success_screen.dart';
 
-// 2. Change this to a StatefulWidget
-class CartScreen extends StatefulWidget {
+class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
-  // 3. Create the State
-  State<CartScreen> createState() => _CartScreenState();
-}
-
-// 4. Rename the class to _CartScreenState
-class _CartScreenState extends State<CartScreen> {
-
-  // 5. Add our loading state variable
-  bool _isLoading = false;
-
-  // 6. Move the build method inside here
-  @override
   Widget build(BuildContext context) {
-    // 1. Get the cart. This time, we *want* to listen (default)
-    //    so this screen rebuilds when we remove an item.
     final cart = Provider.of<CartProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('𝐘𝐨𝐮𝐫 𝐂𝐚𝐫𝐭'),
+        title: const Text('Your Cart'),
       ),
       body: Column(
         children: [
-          // 2. The list of items
           Expanded(
-            // 3. If cart is empty, show a message
             child: cart.items.isEmpty
                 ? const Center(child: Text('Your cart is empty.'))
                 : ListView.builder(
               itemCount: cart.items.length,
               itemBuilder: (context, index) {
                 final cartItem = cart.items[index];
-                // 4. A ListTile to show item details
                 return ListTile(
                   leading: CircleAvatar(
-                    // Show a mini-image (or first letter)
                     child: Text(cartItem.name[0]),
                   ),
                   title: Text(cartItem.name),
@@ -52,14 +32,11 @@ class _CartScreenState extends State<CartScreen> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // 5. Total for this item
                       Text(
                           '₱${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}'),
-                      // 6. Remove button
                       IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.pink),
+                        icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () {
-                          // 7. Call the removeItem function
                           cart.removeItem(cartItem.id);
                         },
                       ),
@@ -69,78 +46,58 @@ class _CartScreenState extends State<CartScreen> {
               },
             ),
           ),
-
-          // 8. The Total Price Summary
           Card(
             margin: const EdgeInsets.all(16),
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
                 children: [
-                  const Text(
-                    'Total:',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Subtotal:', style: TextStyle(fontSize: 16)),
+                      Text('₱${cart.subtotal.toStringAsFixed(2)}', style: const TextStyle(fontSize: 16)),
+                    ],
                   ),
-                  Text(
-                    '₱${cart.totalPrice.toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('VAT (12%):', style: TextStyle(fontSize: 16)),
+                      Text('₱${cart.vat.toStringAsFixed(2)}', style: const TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                  const Divider(height: 20, thickness: 1),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Total:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      Text(
+                        '₱${cart.totalPriceWithVat.toStringAsFixed(2)}',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
           ),
-
-          // 4. --- ADD THIS NEW BUTTON ---
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50), // Wide button
+                minimumSize: const Size.fromHeight(50),
               ),
-
-              // 5. Disable button if loading OR if cart is empty
-              onPressed: (_isLoading || cart.items.isEmpty) ? null : () async {
-                // 6. Start the loading spinner
-                setState(() {
-                  _isLoading = true;
-                });
-
-                try {
-                  // 7. Get provider (listen: false is for functions)
-                  final cartProvider = Provider.of<CartProvider>(context, listen: false);
-
-                  // 8. Call our new methods
-                  await cartProvider.placeOrder();
-                  await cartProvider.clearCart();
-
-                  // 9. Navigate to success screen
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const OrderSuccessScreen()),
-                        (route) => false,
-                  );
-
-                } catch (e) {
-                  // 10. Show error if placeOrder() fails
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to place order: $e')),
-                  );
-                } finally {
-                  // 11. ALWAYS stop the spinner
-                  if (mounted) {
-                    setState(() {
-                      _isLoading = false;
-                    });
-                  }
-                }
+              onPressed: cart.items.isEmpty ? null : () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => PaymentScreen(
+                      totalAmount: cart.totalPriceWithVat,
+                    ),
+                  ),
+                );
               },
-
-              // 12. Show spinner or text based on loading state
-              child: _isLoading
-                  ? const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
-              )
-                  : const Text('Place Order'),
+              child: const Text('Proceed to Payment'),
             ),
           ),
         ],

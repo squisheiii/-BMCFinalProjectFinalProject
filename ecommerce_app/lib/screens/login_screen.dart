@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: Colors.pinkAccent,
+          backgroundColor: Colors.blueGrey,
         ),
       );
     } catch (e) {
@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An unexpected error occurred'),
-          backgroundColor: Colors.pinkAccent,
+          backgroundColor: Colors.black,
         ),
       );
     }
@@ -159,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
                     ),
                   )
                       : const Text('Login'),

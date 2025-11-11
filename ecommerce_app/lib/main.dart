@@ -5,6 +5,15 @@ import 'package:ecommerce_app/screens/auth_wrapper.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:ecommerce_app/providers/cart_provider.dart'; // 1. ADD THIS
 import 'package:provider/provider.dart'; // 2. ADD THIS
+import 'package:google_fonts/google_fonts.dart'; // 1. ADD THIS IMPORT
+
+// 2. --- ADD OUR NEW APP COLOR PALETTE ---
+// Pink Art & Craft Store color palette
+const Color kRichBlack = Color(0xFF1D1F24);
+const Color kBrown = Color(0xFF32E91E);
+const Color kGray = Color(0xFF6A1935);
+const Color kOffWhite = Color(0xFFD5B9CA);
+// --- END OF COLOR PALETTE ---
 
 void main() async {
 
@@ -39,11 +48,76 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'eCommerce App',
+      title: 'Baby Products Marketplace',
+
+      // 1. --- THIS IS THE NEW, COMPLETE THEME ---
       theme: ThemeData(
-        primarySwatch: Colors.pink,
-        useMaterial3: true, // Optional: for Material 3
+        // 2. Set the main color scheme
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: kBrown, // Our new primary color
+          brightness: Brightness.light,
+          primary: kBrown,
+          onPrimary: Colors.blue,
+          secondary: kGray,
+          background: kOffWhite, // Our new app background
+        ),
+        useMaterial3: true,
+
+        // 3. Set the background color for all screens
+        scaffoldBackgroundColor: kGray,
+
+        // 4. --- (FIX) APPLY THE GOOGLE FONT ---
+        // This applies "Lato" to all text in the app
+        textTheme: GoogleFonts.latoTextTheme(
+          Theme.of(context).textTheme,
+        ),
+
+        // 5. --- (FIX) GLOBAL BUTTON STYLE ---
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: kRichBlack, // Use our new pink
+            foregroundColor: Colors.blueGrey, // Text color
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Rounded corners
+            ),
+          ),
+        ),
+
+        // 6. --- (FIX) GLOBAL TEXT FIELD STYLE ---
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.green[400]!),
+          ),
+          labelStyle: TextStyle(color: kGray.withOpacity(0.8)),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.green, width: 2.0),
+          ),
+        ),
+
+        // 7. --- (FIX) GLOBAL CARD STYLE ---
+        cardTheme: CardThemeData(
+          elevation: 1, // A softer shadow
+          color: Colors.blueAccent, // Pure white cards on the off-white bg
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          // 8. This ensures the images inside the card are rounded
+          clipBehavior: Clip.antiAlias,
+        ),
+
+        // 9. --- (NEW) GLOBAL APPBAR STYLE ---
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.yellow, // Clean white AppBar
+          foregroundColor: kRichBlack, // Black icons and text
+          elevation: 0, // No shadow, modern look
+          centerTitle: true,
+        ),
       ),
+      // --- END OF NEW THEME ---
+
       home: const AuthWrapper(),
     );
   }

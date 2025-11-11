@@ -1,4 +1,3 @@
-
 import 'package:ecommerce_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +21,7 @@ class OrderSuccessScreen extends StatelessWidget {
               // 2. A nice success icon
               const Icon(
                 Icons.check_circle_outline,
-                color: Colors.pinkAccent,
+                color: Colors.green,
                 size: 100,
               ),
               const SizedBox(height: 20),
@@ -62,4 +61,3 @@ class OrderSuccessScreen extends StatelessWidget {
     );
   }
 }
-
